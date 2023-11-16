@@ -1,0 +1,87 @@
+package TravelDistance;
+
+import ui.UIAuxiliaryMethods;
+import java.io.PrintStream;
+import java.util.Scanner;
+
+public class travelDistance {
+    PrintStream out;
+    Scanner scanner;
+    Coordinate[] coordinatesArray = new Coordinate[250];
+    Coordinate[] otherCoordinatesArray = new Coordinate[250];
+    int arrayIndexNumber = 0;
+    int arrayIndexNumber01 = 0;
+    String firstPart;
+    String secondPart;
+    String position;
+
+    public travelDistance() {
+        out = new PrintStream(System.out);
+        scanner = new Scanner(System.in);
+    }
+
+    void readCoordinates(Scanner line) {
+        position = line.next();
+        out.println(position);
+        splitter(line);
+    }
+
+    void splitter(Scanner Part) {
+        Part.useDelimiter(",");
+        firstPart = Part.next().trim();
+        secondPart = Part.next().trim();
+        out.printf("%s %s%n", firstPart, secondPart);
+        int x = Integer.parseInt(firstPart);
+        int y = Integer.parseInt(secondPart);
+        if ("b".equals(position)) {
+            coordinatesArray[arrayIndexNumber] = new Coordinate(x, y);
+            arrayIndexNumber++;
+        } else {
+            otherCoordinatesArray[arrayIndexNumber01] = new Coordinate(x, y);
+            arrayIndexNumber01++;
+        }
+    }
+
+    public Coordinate[] getCoordinatesArray() {
+        return coordinatesArray;
+    }
+
+    public Coordinate[] getOtherCoordinatesArray() {
+        return otherCoordinatesArray;
+    }
+
+    void printArray01() {
+        out.println("Printing coordinatesArray:");
+        for (int i = 0; i < arrayIndexNumber; i++) {
+            Coordinate currentCoordinate = coordinatesArray[i];
+            out.printf("(%d , %d)%n", currentCoordinate.getX(), currentCoordinate.getY());
+        }
+    }
+
+    void start() {
+        try (Scanner in = UIAuxiliaryMethods.askUserForInput().getScanner()) {
+            String[] inputCoordinates = in.nextLine().split(",");
+            try {
+                int x = Integer.parseInt(inputCoordinates[0].trim());
+                int y = Integer.parseInt(inputCoordinates[1].trim());
+
+                Coordinate firstLine = new Coordinate(x, y);
+                out.printf("(%d , %d)\n", firstLine.getX(), firstLine.getY());
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                e.printStackTrace();
+            }
+
+            while (in.hasNextLine()) {
+                Scanner line = new Scanner(in.nextLine());
+                readCoordinates(line);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        travelDistance travel = new travelDistance();
+        CoordinateRow coordinateRow = new CoordinateRow(travel);
+        travel.start();
+        coordinateRow.printRouteAndDistance();
+    }
+}
