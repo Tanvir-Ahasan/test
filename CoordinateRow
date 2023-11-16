@@ -1,0 +1,62 @@
+package TravelDistance;
+
+public class CoordinateRow {
+    Coordinate[] backArray = new Coordinate[250];
+    Coordinate[] frontArray = new Coordinate[250];
+    Coordinate[] resultArray = new Coordinate[500]; // Adjust the size as needed
+
+    CoordinateRow(travelDistance travel) {
+        backArray = travel.getCoordinatesArray();
+        frontArray = travel.getOtherCoordinatesArray();
+        fillFrontArrayFromBackArray();
+        transferFrontArrayToResultArray();
+    }
+
+    void fillFrontArrayFromBackArray() {
+        for (int i = 0; i < frontArray.length; i++) {
+            if (frontArray[i] == null && backArray != null && i < backArray.length && backArray[i] != null) {
+                frontArray[i] = backArray[i];
+                backArray[i] = null;
+            } else {
+                break;
+            }
+        }
+    }
+ 
+    
+    void transferFrontArrayToResultArray() {
+        for (int i = 0; i < resultArray.length && i < frontArray.length; i++) {
+            resultArray[i] = frontArray[i];
+        }
+    }
+
+    int findFirstNullIndex(Coordinate[] array) {
+        if (array != null) {
+            for (int i = 0; i < array.length; i++) {
+                if (array[i] == null) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    void printRouteAndDistance() {
+        System.out.println("The correct route is:");
+        double totalDistance = 0;
+
+        for (int i = 0; i < resultArray.length; i++) {
+            Coordinate currentCoordinate = resultArray[i];
+
+            if (currentCoordinate != null) {
+                System.out.println(currentCoordinate.getX() + "," + currentCoordinate.getY());
+
+                if (i < resultArray.length - 1 && resultArray[i + 1] != null) {
+                    totalDistance += currentCoordinate.distanceTo(resultArray[i + 1]);
+                }
+            }
+        }
+
+        System.out.println("\nThe total distance is " + String.format("%.2f", totalDistance));
+    }
+}
